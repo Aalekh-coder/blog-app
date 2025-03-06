@@ -1,8 +1,11 @@
 "use server";
 
 import aj from "@/lib/arcjet";
+import connectToDatabase from "@/lib/db";
 import { request } from "@arcjet/next";
 import { z } from "zod";
+import { genSalt, hash } from "bcryptjs";
+import User from "@/models/UserModel"
 
 const schema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -70,6 +73,40 @@ export async function registerUserAction(formData) {
           status: 403,
         };
       }
+    }
+
+    // database connection
+    await connectToDatabase();
+
+    const existiingUser = await User.findOne({ email });
+    if (existiingUser) {
+      return {
+        error: "User already exists",
+        status: 400,
+      };
+    }
+
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password, salt);
+
+    const result = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    await result.save();
+
+    if (result) {
+      return {
+        success: "User register successfully",
+        status: 201,
+      };
+    } else {
+      return {
+        error: "Internal server error the user information dont be saved",
+        status: 500,
+      };
     }
   } catch (error) {
     console.log(error, "Registation error");

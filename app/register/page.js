@@ -1,14 +1,21 @@
 import Link from "next/link";
 import RegisterForm from "../components/auth/RegisterForm";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const token = await cookies.get("token")?.value;
+
+  if (token) {
+    redirect("/")
+  }
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row bg-gradient-to-br from-gray-100 to-gray-200">
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 lg:p-12">
         <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-lg shadow-lg">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Register 
+              Register
             </h1>
             <p className="text-sm text-gray-500">
               Create your account to get started
@@ -45,5 +52,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-

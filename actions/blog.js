@@ -2,7 +2,7 @@ import { blogPostRules } from "@/lib/arcjet";
 import { verifyAuth } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
 import BlogPost from "@/models/blogModel";
-import { shield } from "@arcjet/next";
+import { request } from "@arcjet/next";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { z } from "zod";
@@ -13,7 +13,6 @@ const blogPostSchema = z.object({
   category: z.string().min(1, "category is required"),
   coverImage: z.string().min(1, "coverImage is required"),
 });
-
 
 export async function createBlogPostAction(data) {
   const token = (await cookies()).get("token")?.value;
@@ -49,6 +48,7 @@ export async function createBlogPostAction(data) {
           isSuspicious,
         },
       },
+      requested: 10,
     });
 
     if (decision.isErrored()) {
@@ -73,27 +73,29 @@ export async function createBlogPostAction(data) {
 
       return {
         error: "Request Denied",
+        status: 403,
       };
-      }
-      
-      await connectToDatabase();
+    }
 
-      const post = new BlogPost({
-          title,
-          content,
-          author: user?.userId,
-          coverImage,
-          category,
-          comments:[],
-          upvotes:[]
-      })
+    await connectToDatabase();
 
-      await post.save();
-      revalidatePath("/");
-      return {
-          success: true,
-          post,
-      }
+    const post = new BlogPost({
+      title,
+      content,
+      author: user?.userId,
+      coverImage,
+      category,
+      comments: [],
+      upvotes: [],
+    });
+
+    console.log(post);
+    await post.save();
+    revalidatePath("/");
+    return {
+      success: true,
+      post,
+    };
   } catch (error) {
     return {
       error: error,

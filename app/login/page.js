@@ -2,7 +2,6 @@ import Link from "next/link";
 import LoginForm from "../components/auth/LoginForm";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import Image from "next/image";
 
 export default async function LoginPage() {
 

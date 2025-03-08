@@ -17,11 +17,10 @@ import { PlusCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import "@uploadthing/react/styles.css";
-
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import "react-quill-new/dist/quill.snow.css";
@@ -90,37 +89,6 @@ const CreateBlogForm = ({ user }) => {
     []
   );
 
-  // const onBlogSubmit = async (data) => {
-  //   setIsLoading(true);
-
-  //   try {
-  //     const isSuspiciousInput = isSuspiciousContent(data);
-
-  //     const result = await fetch("/api/create-blog-post", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-type": "application/json",
-  //         "x-arcjet-suspicious": isSuspiciousInput.toString(),
-  //       },
-  //       body: JSON.stringify(data),
-  //     }).then((res) => res.json());
-
-  //     console.log(result,"result");
-
-  //     if (result?.success) {
-  //       toast.success("successfully");
-  //       router.push("/");
-  //     } else {
-  //       toast.error("something went wrong error occured");
-  //     }
-  //   } catch (error) {
-  //     toast.error("something error while save your blog");
-  //     console.log(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const onBlogSubmit = async (data) => {
     setIsLoading(true);
     try {
@@ -135,16 +103,18 @@ const CreateBlogForm = ({ user }) => {
         body: JSON.stringify(data),
       }).then((res) => res.json());
 
-     
-
       if (result.success) {
         toast(result.success);
         router.push("/");
       } else {
-        toast(result.error);
+        toast(result.error, {
+          duration: 3000,
+        });
       }
     } catch (e) {
-      toast("Some error occured");
+      toast(e.message, {
+        duration: 3000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -266,7 +236,7 @@ const CreateBlogForm = ({ user }) => {
                   modules={modules}
                   {...field}
                   onChange={(content) => field.onChange(content)}
-                  placeholder="Write your story"
+                  placeholder="Write your story...."
                   className="quill-editor"
                 />
               )}
@@ -274,6 +244,7 @@ const CreateBlogForm = ({ user }) => {
           )}
         </form>
       </main>
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

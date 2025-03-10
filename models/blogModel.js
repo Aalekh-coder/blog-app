@@ -29,6 +29,9 @@ const blogPostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    authorName: {
+      type: String,
+    },
     category: {
       type: String,
     },

@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+“Just let them.
 
-## Getting Started
+If they want to choose something or someone over you, LET THEM.
 
-First, run the development server:
+If they want to go weeks without talking to you, LET THEM.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+If they are okay with never seeing you, LET THEM.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If they are okay with always putting themselves first, LET THEM.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+If they are showing you who they are and not what you perceived them to be, LET THEM.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If they want to follow the crowd, LET THEM.
 
-## Learn More
+If they want to judge or misunderstand you, LET THEM.
 
-To learn more about Next.js, take a look at the following resources:
+If they act like they can live without you, LET THEM.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If they want to walk out of your life and leave, hold the door open, AND LET THEM.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Let them lose you.
 
-## Deploy on Vercel
+You were never theirs because you were always your own.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+So let them.”

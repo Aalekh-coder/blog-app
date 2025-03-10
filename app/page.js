@@ -1,8 +1,10 @@
-import Image from "next/image";
 import HomeComponents from "./components/home";
+import {getBlogPostsAction} from "@/actions/blog"
 
-export default function Home() {
+export default async function Home() {
+  const {posts} = await getBlogPostsAction();
+
   return (
-    <HomeComponents/>
+    <HomeComponents posts={posts} />
   );
 }

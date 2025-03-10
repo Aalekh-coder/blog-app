@@ -1,6 +1,6 @@
 "use server";
 
-import { commentRules } from "@/lib/arcjet";
+import { commentRules, searchRules } from "@/lib/arcjet";
 import { verifyAuth } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
 import BlogPost from "@/models/blogModel";
@@ -17,7 +17,6 @@ const commentSchema = z.object({
 export async function addCommentAction(data) {
   const token = (await cookies()).get("token")?.value;
   const user = await verifyAuth(token);
-  
 
   if (!user) {
     return {
@@ -90,6 +89,79 @@ export async function addCommentAction(data) {
     console.log(error);
     return {
       error: "Some error occured",
+    };
+  }
+}
+
+export async function searchPostsAction(query) {
+  const token = (await cookies()).get("token")?.value;
+  const user = await verifyAuth(token);
+
+  if (!user) {
+    return {
+      error: "Unauth user",
+      status: 401,
+    };
+  }
+
+  try {
+    const req = await request();
+    const decision = await searchRules.protect(req, { requested: 1 });
+
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        return {
+          error: "Rate limit excedeed! Please try after some time",
+          statu: 429,
+        };
+      }
+
+      if (decision.reason.isBot()) {
+        return {
+          error: "Bot activity detected",
+        };
+      }
+      return {
+        error: "Request denied",
+        status: 403,
+      };
+    }
+
+    await connectToDatabase();
+    const posts = await BlogPost.find(
+      {
+        $text: { $search: query },
+      },
+      {
+        score: { $meta: "textScore" },
+      }
+    )
+      .sort({ score: { $meta: "textScore" } })
+      .limit(10)
+      .populate("author", "name")
+      .lean()
+      .exec();
+    
+      const serializedPosts = posts.map((post) => ({
+        _id: post._id.toString(),
+        title: post.title,
+        coverImage: post.coverImage,
+        author: {
+          _id: post.author._id.toString(),
+          name: post.author.name,
+        },
+        category: post.category,
+        createdAt: post.createdAt.toISOString(),
+      }));
+    
+    return {
+      success: true,
+      posts:serializedPosts
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Some error occured while search! Please try again some time!",
     };
   }
 }

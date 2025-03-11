@@ -103,20 +103,88 @@ export async function createBlogPostAction(data) {
   }
 }
 
+// export async function getBlogPostsAction() {
+//   const token = (await cookies()).get("token")?.value;
+//   const user = await verifyAuth(token);
+
+//   if (!user) {
+//     return {
+//       error: "Unauth user",
+//       status: 401,
+//     };
+//   }
+
+//   try {
+//     const req = await request();
+//     const decision = await blogPostRules.protect(req, { requested: 10 });
+//     if (decision.isDenied()) {
+//       if (decision.reason.isRateLimit()) {
+//         return {
+//           error: "Rate limit excedeed! Please try after some time",
+//           statu: 429,
+//         };
+//       }
+
+//       if (decision.reason.isBot()) {
+//         return {
+//           error: "Bot activity detected",
+//         };
+//       }
+//       return {
+//         error: "Request denied",
+//         status: 403,
+//       };
+//     }
+
+//     await connectToDatabase();
+
+//     const posts = await BlogPost.find()
+//       .sort({ createdAt: -1 })
+//       .populate("author", "name");
+
+//     const serializedPosts = posts.map((post) => ({
+//       _id: post._id.toString(),
+//       title: post.title,
+//       coverImage: post.coverImage,
+//       author: {
+//         _id: post.author._id.toString(),
+//         name: post.author.name,
+//       },
+//       category: post.category,
+//       createdAt: post.createdAt.toISOString(),
+//     }));
+
+//     return {
+//       success: true,
+//       posts: serializedPosts,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       error: "Failed to fetch the blog please try again",
+//       status: 401,
+//     };
+//   }
+// }
+
 export async function getBlogPostsAction() {
-  const token = (await cookies()).get("token")?.value;
-  const user = await verifyAuth(token);
-
-  if (!user) {
-    return {
-      error: "Unauth user",
-      status: 401,
-    };
-  }
-
   try {
+    const token = (await cookies()).get("token")?.value;
+    console.log("Token:", token);
+    const user = await verifyAuth(token);
+    console.log("User:", user);
+
+    if (!user) {
+      return {
+        error: "Unauth user",
+        status: 401,
+      };
+    }
+
     const req = await request();
     const decision = await blogPostRules.protect(req, { requested: 10 });
+    console.log("Decision:", decision);
+
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
         return {
@@ -137,10 +205,12 @@ export async function getBlogPostsAction() {
     }
 
     await connectToDatabase();
+    console.log("Database connected");
 
     const posts = await BlogPost.find()
       .sort({ createdAt: -1 })
       .populate("author", "name");
+    console.log("Posts:", posts);
 
     const serializedPosts = posts.map((post) => ({
       _id: post._id.toString(),
@@ -159,7 +229,7 @@ export async function getBlogPostsAction() {
       posts: serializedPosts,
     };
   } catch (error) {
-    console.log(error);
+    console.log("Error:", error);
     return {
       error: "Failed to fetch the blog please try again",
       status: 401,

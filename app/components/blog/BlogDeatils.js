@@ -26,7 +26,6 @@ function BlogDetails({ post }) {
     
     try {
       const result = await addCommentAction({ ...data, postId: post._id });
-      console.log(result);
       if (result.success) {
         toast.success("Comment added successfully");
         reset();

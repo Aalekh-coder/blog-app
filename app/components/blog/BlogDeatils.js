@@ -71,9 +71,14 @@ function BlogDetails({ post }) {
         />
       )}
 
-      <article className="prose lg:prose-xl ">
+      {/* <article className="prose lg:prose-xl ">
         <div dangerouslySetInnerHTML={{ __html: post?.content }} />
-      </article>
+      </article> */}
+     
+     <div
+      className="prose max-w-none text-2xl"
+      dangerouslySetInnerHTML={{ __html: post?.content }}
+    />
 
       {/* comment form  */}
 
